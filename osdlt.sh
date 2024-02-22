@@ -190,12 +190,12 @@ while true; do
             esac
           done
         fi
-
         if virt-customize -a "/var/tmp/image.qcow2" \
           --run-command "sed -i '/^#PasswordAuthentication[[:space:]]/c\PasswordAuthentication yes' /etc/ssh/sshd_config" \
           --run-command "sed -i '/^PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config" \
           --run-command "sed -i '/^#PermitRootLogin[[:space:]]/c\PermitRootLogin yes' /etc/ssh/sshd_config"; then
          echo "PasswordAuthentication and PermitRootLogin have been successfully allowed in the image."
+        fi
         else
           echo "Failed to set up SSH PasswordAuthentication."
           exit 1
