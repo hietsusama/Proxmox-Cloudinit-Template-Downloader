@@ -168,7 +168,7 @@ while true; do
 done
 
 while true; do
-    read -rp "Do you want to allow PasswordAuthentication in the VM image? (If the default is no) [y/N] " install_qga
+    read -rp "Do you want to allow PasswordAuthentication and PermitRootLogin in the VM image? (If the default is no) [y/N] " install_qga
     case "$install_qga" in
       y|Y)
         if ! command -v virt-customize &>/dev/null; then
@@ -183,7 +183,7 @@ while true; do
                 fi
                 break ;;
               n|N)
-                echo "Skipping the PasswordAuthentication setup."
+                echo "Skipping the PasswordAuthentication and PermitRootLogin setup."
                 return 0 ;;
               *)
                 echo "Invalid input. Please answer y or n." ;;
@@ -191,8 +191,11 @@ while true; do
           done
         fi
 
-        if virt-customize -a "/var/tmp/image.qcow2" --run-command "sed -i '/^#PasswordAuthentication[[:space:]]/c\PasswordAuthentication yes' /etc/ssh/sshd_config" --run-command "sed -i '/^PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config"; then
-          echo "PasswordAuthentication has been successfully allowed in the image."
+        if virt-customize -a "/var/tmp/image.qcow2" \
+          --run-command "sed -i '/^#PasswordAuthentication[[:space:]]/c\PasswordAuthentication yes' /etc/ssh/sshd_config" \
+          --run-command "sed -i '/^PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config" \
+          --run-command "sed -i '/^#PermitRootLogin[[:space:]]/c\PermitRootLogin yes' /etc/ssh/sshd_config"; then
+         echo "PasswordAuthentication and PermitRootLogin have been successfully allowed in the image."
         else
           echo "Failed to set up SSH PasswordAuthentication."
           exit 1
